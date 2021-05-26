@@ -5,7 +5,7 @@
   "license": "ISC",
   "dependencies": {
     "@sap/audit-logging": "^3.1.0",
-    "@sap/cds": "^4.2.3",
+    "@sap/cds": "^5.1.4",
     "@sap/hana-client": "^2.4.182",
     "@sap/xb-msg-amqp-v100": "^0.9.39",
     "@sap/xsenv": "^2.1.0",
@@ -20,6 +20,9 @@
     "start": "npx cds run",
     "test": "mocha tests/mocha.test.js --timeout 28000"
   },
+   "engines": {
+  "node": "14.16.0"
+},
   "devDependencies": {
     "axios": "^0.21.1",
     "jest": "*",
