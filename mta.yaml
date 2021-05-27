@@ -44,7 +44,7 @@ modules:
    path: gen/db  
    parameters:
      app-name: BusinessPartnerValidation-db
-     memory: 128MB  
+     memory: 256MB  
    requires:
     # 'hana' and 'xsuaa' resources extracted from CAP configuration
     - name: BusinessPartnerValidation-db
@@ -107,10 +107,5 @@ resources:
  - name: BusinessPartnerValidation-cs
    parameters:
      service: connectivity
-     service-plan: lite
-   type: org.cloudfoundry.managed-service
- - name: BusinessPartnerValidation-logs
-   parameters:
-     service: application-logs
      service-plan: lite
    type: org.cloudfoundry.managed-service
