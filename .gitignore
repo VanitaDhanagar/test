@@ -1,11 +1,10 @@
-# CAP BusinessPartnerValidation
+# CAP bookshop
 _out
 *.db
 connection.properties
 default-*.json
 gen/
 node_modules/
-package-lock.json
 target/
 
 # Web IDE, App Studio
@@ -22,7 +21,14 @@ mta_archives/
 *.orig
 *.log
 
-#local Secrets
+*.iml
+*.flattened-pom.xml
 
-localSample.js
-appEnv.json
+# IDEs
+# .vscode
+# .idea
+
+# auto generated wildcard
+.env1
+# auto generated wildcard
+.env3

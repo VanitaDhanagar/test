@@ -1,80 +1,52 @@
-## Generated mta.yaml based on template version 0.2.0
-## appName = BusinessPartnerValidation
-## language=nodejs; multiTenant=false
+## Generated mta.yaml based on template version 0.4.0
+## appName = bookshop
+## language=nodejs; multitenant=false
 ## approuter=
 _schema-version: '3.1'
-ID: BusinessPartnerValidation
+ID: bookshop
 version: 1.0.0
 description: "A simple CAP project."
 parameters:
-  enable-parallel-deployments: true  
+  enable-parallel-deployments: true
+   
 build-parameters:
   before-all:
    - builder: custom
      commands:
-      - npm install
+      - npm install --production
       - npx -p @sap/cds-dk cds build --production
 
 modules:
  # --------------------- SERVER MODULE ------------------------
- - name: BusinessPartnerValidation-srv
+ - name: bookshop-srv-v1
  # ------------------------------------------------------------
    type: nodejs
    path: gen/srv
-   parameters:
-     memory: 256MB
-   properties:
-     EXIT: 1  # required by deploy.js task to terminate 
    requires:
     # Resources extracted from CAP configuration
-    - name: BusinessPartnerValidation-db
-    - name: BusinessPartnerValidation-xsuaa
-    - name: BusinessPartnerValidation-dest
-    - name: BusinessPartnerValidation-ems
-    - name: BusinessPartnerValidation-cs
+    - name: bookshop-db-vanita
    provides:
-    - name: srv-binding      # required by consumers of CAP services (e.g. approuter)
+    - name: srv-api      # required by consumers of CAP services (e.g. approuter)
       properties:
         srv-url: ${default-url}
 
  # -------------------- SIDECAR MODULE ------------------------
- - name: db
+ - name: bookshop-db-deployer-v1
  # ------------------------------------------------------------
    type: hdb
    path: gen/db  
    parameters:
-     app-name: BusinessPartnerValidation-db
-     memory: 256MB  
+     buildpack: nodejs_buildpack
    requires:
     # 'hana' and 'xsuaa' resources extracted from CAP configuration
-    - name: BusinessPartnerValidation-db
+    - name: bookshop-db-vanita
 
-#UI Module
- - name: BusinessPartnerValidation-ui
-   type: html5
-   path: app/BusinessPartners
-   parameters:
-     disk-quota: 1024MB
-     memory: 128MB
-   build-parameters:
-     builder: npm
-    # commands:
-     #  - npm run-script build
-   requires:
-     - name: BusinessPartnerValidation-dest # <-- Destination Service
-     - name: BusinessPartnerValidation-xsuaa # <-- User Authentication and Authorization
-     - name: srv-binding
-       group: destinations
-       properties:
-         forwardAuthToken: true
-         name: srv-binding
-         url: '~{srv-url}'
 
 resources:
  # services extracted from CAP configuration
  # 'service-plan' can be configured via 'cds.requires.<name>.vcap.plan'
 # ------------------------------------------------------------
- - name: BusinessPartnerValidation-db
+ - name: bookshop-db-vanita
 # ------------------------------------------------------------
    type: com.sap.xs.hdi-container
    parameters:
@@ -83,29 +55,4 @@ resources:
    properties:
      hdi-service-name: ${service-name}
 
-  # User Authentication and Authorization
- - name: BusinessPartnerValidation-xsuaa
-   parameters:
-     path: ./xs-security.json
-     service-plan: application
-     service: xsuaa
-   type: org.cloudfoundry.managed-service
-  # Destination Service
- - name: BusinessPartnerValidation-dest
-   parameters:
-     service: destination
-     service-plan: lite
-   type: org.cloudfoundry.managed-service
-# Enterprise Messaging Service
- - name: BusinessPartnerValidation-ems
-   parameters:
-     path: ./em.json 
-     service: enterprise-messaging
-     service-plan: default
-   type: org.cloudfoundry.managed-service
-# Enterprise Messaging Service
- - name: BusinessPartnerValidation-cs
-   parameters:
-     service: connectivity
-     service-plan: lite
-   type: org.cloudfoundry.managed-service
+

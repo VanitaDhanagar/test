@@ -1,32 +1,26 @@
-namespace my.businessPartnerValidation;
-using { managed, cuid } from '@sap/cds/common';
+using { Currency, managed, sap } from '@sap/cds/common';
+namespace my.bookshop;
 
-entity Notifications: managed, cuid {
-  businessPartnerId: String;
-  businessPartnerName: String;
-  verificationStatus: Association to StatusValues;
-  addresses: Composition of many Addresses on addresses.notifications=$self;
+entity Books : managed {
+  key ID : Integer;
+  title  : localized String(111);
+  descr  : localized String(1111);
+  author : Association to Authors;
+  genre  : Association to Genres;
+  stock  : Integer;
+  price  : Decimal(9,2);
+  currency : Currency;
 }
 
-entity Addresses:  cuid {
-  notifications: Association to Notifications;
-  addressId:String;
-  country:String;
-  cityName:String;
-  streetName: String;
-  postalCode: String;
-  isModified: Boolean default false;
-  businessPartnerId: String;
-}
-@cds.autoexpose
-entity StatusValues {
-  key code: String ;
-    value: String;
-    criticality: Integer;
-    updateCode:Boolean;
+entity Authors : managed {
+  key ID : Integer;
+  name   : String(111);
+  books  : Association to many Books on books.author = $self;
 }
 
-annotate Notifications with {
-  businessPartnerId @title:'BusinessPartner ID' @readonly;
-  verificationStatus @title:'Verfication Status' @assert.enum;
+/** Hierarchically organized Code List for Genres */
+entity Genres : sap.common.CodeList {
+  key ID   : Integer;
+  parent   : Association to Genres;
+  children : Composition of many Genres on children.parent = $self;
 }
